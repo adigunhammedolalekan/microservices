@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  database:
+    image: postgres:latest
+    container_name: event-database
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: events
+      PGDATA: /var/lib/postgresql/coin/data/db
+      POSTGRES_EXTENSIONS: uuid-ossp
+    volumes:
+      - "${HOME}/mnt/events/data:/var/lib/postgresql/data"
+    ports:
+      - "59111:5432"
+
+  pulsar:
+    image: pulsar
+    container_name: pulsar-pub-sub
+    restart: on-failure
+    volumes:
+      - "${HOME}/mnt/pulsar:/var/lib/pulsar"
+    ports:
+      - "6650:6650"
+      - "8090:8080"
+
+  destroyer:
+    build:
+      context: ./destroyer
+    environment:
+      FOO: BAR
+    ports:
+      - "30001:30001"
+    restart: on-failure
+
+  dealthstar:
+    build:
+      context: ./dealthstar
+    environment:
+      PULSAR_URL:
+      DATABASE_URL: postgres://postgres:manman@database:59111/coindb?sslmode=disable
+    depends_on:
+      - database
+    restart: on-failure
+    ports:
+      - "30002:30002"
+
+  api-gateway:
+    build:
+      context: ./api
+    environment:
+      DESTROYER_URL: destroyer:30001
+    restart: on-failure
+    depends_on:
+      - destroyer

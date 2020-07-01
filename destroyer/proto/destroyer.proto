@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+message EventRequest {
+    string id = 1;
+    string name = 2;
+    repeated Target data = 3;
+}
+
+message Target {
+    string id = 1;
+    string message = 2;
+    string created_on = 3;
+    string updated_on = 4;
+}
