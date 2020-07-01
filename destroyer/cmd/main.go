@@ -5,6 +5,7 @@ import (
 	"github.com/adigunhammedolalekan/microservices-test/destroyer"
 	"github.com/adigunhammedolalekan/microservices-test/types"
 	"github.com/apache/pulsar-client-go/pulsar"
+	"log"
 	"net"
 	"os"
 )
@@ -12,19 +13,19 @@ import (
 func main() {
 	svc, err := createDestroyerService()
 	if err != nil {
-		// ...
+		log.Fatal(err)
 	}
 	srv, err := destroyer.New(svc)
 	if err != nil {
-		// ...
+		log.Fatal(err)
 	}
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		// ...
+		log.Fatal(err)
 	}
 	if err := srv.Run(lis); err != nil {
-
+		log.Fatal(err)
 	}
 }
 

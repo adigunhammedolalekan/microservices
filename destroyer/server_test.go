@@ -84,6 +84,34 @@ func TestService_AcquireTargets(t *testing.T) {
 	t.Log(r.MessageId)
 }
 
+func TestService_ListTargets(t *testing.T) {
+	s := newMockStore()
+	svc := NewService(s, nil)
+	srv, err := New(svc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lis := bufconn.Listen(bufSize)
+	go func() {
+		if err := srv.Run(lis); err != nil {
+			t.Fatal(err)
+		}
+	}()
+	client, err := grpc.Dial("net", grpc.WithContextDialer(createDialer(lis)), grpc.WithInsecure())
+	if err != nil {
+		t.Fatal(err)
+	}
+	destroyerClient := pb.NewDestroyerServiceClient(client)
+	r, err := destroyerClient.ListTargets(context.Background(), &pb.ListTargetsRequest{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r.Data) != 2 {
+		t.Fatalf("expected 2 targets. got %d instead", len(r.Data))
+	}
+	t.Log(r.Data)
+}
+
 func createDialer(lis *bufconn.Listener) func(context.Context, string) (net.Conn, error) {
 	return func(i context.Context, s string) (conn net.Conn, e error) {
 		return lis.Dial()
