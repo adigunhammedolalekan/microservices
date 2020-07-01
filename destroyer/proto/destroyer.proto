@@ -14,3 +14,17 @@ message Target {
     string created_on = 3;
     string updated_on = 4;
 }
+
+message EventResponse {
+    string messageId = 1;
+}
+message ListTargetsRequest {}
+
+message TargetResponse {
+    repeated Target data = 1;
+}
+
+service DestroyerService {
+    rpc AcquireTargets(EventRequest) returns (EventResponse) {}
+    rpc ListTargets(ListTargetsRequest) returns (TargetResponse) {}
+}
