@@ -15,6 +15,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer func() {
+		if err := svc.Close(); err != nil {
+			log.Printf("failed to close destroyer service: %s", err.Error())
+		}
+	}()
+
 	srv, err := destroyer.New(svc)
 	if err != nil {
 		log.Fatal(err)
@@ -24,6 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("destroyer service running on %s", addr)
 	if err := srv.Run(lis); err != nil {
 		log.Fatal(err)
 	}

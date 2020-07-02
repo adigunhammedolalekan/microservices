@@ -1,4 +1,4 @@
-#!/bin/bash
-export SRC_DIR=${PWD}/destroyer/proto DST_DIR=${PWD}/destroyer/proto/pb
-mkdir $DST_DIR
-protoc -I=${SRC_DIR} --go_out=plugins=grpc:${DST_DIR} ${SRC_DIR}/destroyer.proto
+export GOOS=linux
+go build -o api/api api/cmd/main.go
+go build -o dealthstar/dealthstar dealthstar/cmd/main.go
+go build -o destroyer/destroyer destroyer/cmd/main.go

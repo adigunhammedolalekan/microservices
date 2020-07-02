@@ -3,7 +3,6 @@ package types
 import (
 	"github.com/adigunhammedolalekan/microservices-test/destroyer/proto/pb"
 	"github.com/google/uuid"
-	"time"
 )
 
 const (
@@ -17,10 +16,10 @@ type Event struct {
 }
 
 type Target struct {
-	Id        string    `json:"id"`
-	Message   string    `json:"message"`
-	CreatedOn time.Time `json:"created_on"`
-	UpdatedOn time.Time `json:"updated_on"`
+	Id        string `json:"id"`
+	Message   string `json:"message"`
+	CreatedOn string `json:"created_on"`
+	UpdatedOn string `json:"updated_on"`
 }
 
 func NewEvent(name string, data []*Target) *Event {
@@ -28,19 +27,11 @@ func NewEvent(name string, data []*Target) *Event {
 }
 
 func NewTarget(t *pb.Target) (*Target, error) {
-	c, err := time.Parse(time.RFC3339, t.CreatedOn)
-	if err != nil {
-		return nil, err
-	}
-	u, err := time.Parse(time.RFC3339, t.UpdatedOn)
-	if err != nil {
-		return nil, err
-	}
 	return &Target{
 		Id:        t.Id,
 		Message:   t.Message,
-		CreatedOn: c,
-		UpdatedOn: u,
+		CreatedOn: t.CreatedOn,
+		UpdatedOn: t.UpdatedOn,
 	}, nil
 }
 
@@ -48,7 +39,7 @@ func Convert(targets []*Target) []*pb.Target {
 	data := make([]*pb.Target, 0, len(targets))
 	for _, next := range targets {
 		t := &pb.Target{
-			Id: next.Id, Message: next.Message, CreatedOn: next.CreatedOn.String(), UpdatedOn: next.UpdatedOn.String(),
+			Id: next.Id, Message: next.Message, CreatedOn: next.CreatedOn, UpdatedOn: next.UpdatedOn,
 		}
 		data = append(data, t)
 	}

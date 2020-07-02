@@ -11,9 +11,11 @@ import (
 	"net"
 	"testing"
 )
+
 const (
 	bufSize = 1024 * 1024
 )
+
 var (
 	mockTargets = []*pb.Target{
 		{Id: uuid.New().String(), Message: "some message to send", CreatedOn: "2020-06-25T16:31:18.993Z", UpdatedOn: "2020-06-25T16:31:18.993Z"},
@@ -21,9 +23,9 @@ var (
 	}
 )
 
-type mockStore struct {}
-type mockProducer struct {}
-type mockMessageID struct {}
+type mockStore struct{}
+type mockProducer struct{}
+type mockMessageID struct{}
 
 func newMockProducer() *mockProducer {
 	return &mockProducer{}

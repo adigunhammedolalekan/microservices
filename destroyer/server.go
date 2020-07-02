@@ -7,6 +7,7 @@ import (
 	"github.com/adigunhammedolalekan/microservices-test/types"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"google.golang.org/grpc"
+	"log"
 	"net"
 )
 
@@ -26,13 +27,13 @@ func (srv *Server) Run(lis net.Listener) error {
 
 type Producer interface {
 	Send(ctx context.Context, opt *pulsar.ProducerMessage) (pulsar.MessageID, error)
+	Close()
 }
 
 type Service struct {
 	producer Producer
-	store Store
+	store    Store
 }
-
 
 func NewService(store Store, producer Producer) *Service {
 	return &Service{producer: producer, store: store}
@@ -70,4 +71,10 @@ func (svc *Service) ListTargets(ctx context.Context, req *pb.ListTargetsRequest)
 	return &pb.TargetResponse{
 		Data: r,
 	}, nil
+}
+
+func (svc *Service) Close() error {
+	log.Println("cleanup: closing destroyer service")
+	svc.producer.Close()
+	return svc.store.Close()
 }

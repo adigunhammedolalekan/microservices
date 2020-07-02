@@ -9,10 +9,15 @@ import (
 
 type Store interface {
 	ListTargets() ([]*types.Target, error)
+	Close() error
 }
 
 type databaseStore struct {
 	db *gorm.DB
+}
+
+func (s *databaseStore) Close() error {
+	return s.db.Close()
 }
 
 func NewStore() (Store, error) {
@@ -25,7 +30,7 @@ func NewStore() (Store, error) {
 
 func (s *databaseStore) ListTargets() ([]*types.Target, error) {
 	data := make([]*types.Target, 0)
-	err := s.db.Table("events").Find(&data).Error
+	err := s.db.Table("targets").Find(&data).Error
 	if err != nil {
 		return nil, err
 	}

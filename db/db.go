@@ -3,10 +3,11 @@ package db
 import (
 	"github.com/adigunhammedolalekan/microservices-test/types"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func Connect(url string) (*gorm.DB, error) {
-	database, err := gorm.Open(url)
+	database, err := gorm.Open("postgres", url)
 	if err != nil {
 		return nil, err
 	}
@@ -18,5 +19,5 @@ func Connect(url string) (*gorm.DB, error) {
 }
 
 func runMigration(database *gorm.DB) {
-	database.AutoMigrate(&types.Event{})
+	database.AutoMigrate(&types.Target{})
 }

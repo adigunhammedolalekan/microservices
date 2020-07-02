@@ -1,10 +1,7 @@
-FROM golang:alpine3.11
-
-COPY . /app
+FROM alpine:3.2
+RUN apk update && apk add --no-cache ca-certificates
+ADD . /app
 WORKDIR /app
-
-RUN go get ./...
-ENV GOOS linux
-RUN go build -o dealthstar cmd/main.go
+RUN chmod +x /app/dealthstar
 EXPOSE 30002
-ENTRYPOINT [ "./dealthstar" ]
+ENTRYPOINT [ "/app/dealthstar" ]

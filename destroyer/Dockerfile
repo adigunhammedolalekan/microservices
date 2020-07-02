@@ -1,10 +1,7 @@
-FROM golang:alpine3.11
-
-COPY . /app
+FROM alpine:3.2
+RUN apk update && apk add --no-cache ca-certificates
+ADD . /app
 WORKDIR /app
-
-RUN go get ./...
-ENV GOOS linux
-RUN go build -o destroyer cmd/main.go
+RUN chmod +x /app/destroyer
 EXPOSE 30001
-ENTRYPOINT [ "./destroyer" ]
+ENTRYPOINT [ "/app/destroyer" ]

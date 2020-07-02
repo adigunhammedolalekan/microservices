@@ -20,29 +20,32 @@ services:
     container_name: pulsar-pub-sub
     restart: on-failure
     volumes:
-      - "${HOME}/mnt/pulsar:/var/lib/pulsar"
+      - "${HOME}/storage/data/pulsar:/pulsar/data"
     ports:
       - "6650:6650"
       - "8090:8080"
+    command: bin/pulsar standalone
 
   destroyer:
     build:
       context: ./destroyer
     environment:
       PULSAR_URL: pulsar://pulsar:6650
+      DATABASE_URL: postgres://postgres:root@database:5432/events?sslmode=disable
       PORT: 30001
     ports:
       - "30001:30001"
     restart: on-failure
     depends_on:
       - pulsar
+      - database
 
   dealthstar:
     build:
       context: ./dealthstar
     environment:
       PULSAR_URL: pulsar://pulsar:6650
-      DATABASE_URL: postgres://postgres:manman@database:59111/events?sslmode=disable
+      DATABASE_URL: postgres://postgres:root@database:5432/events?sslmode=disable
       PORT: 30002
     depends_on:
       - database
