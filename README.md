@@ -1,4 +1,4 @@
-# Event Driven Microservices Test
+# Event Driven Microservices
 
 ### How to run
 ##### Requirements
